@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
+    	<meta name="apple-mobile-web-app-capable" content="yes" />
+    	<title>BizNavi-Mobile</title>
+
+ 		<link rel="stylesheet" href="dojo/dojox/mobile/themes/iphone/iphone.css"></link>
+ 		<link rel="stylesheet" href="dojo/dojox/calendar/themes/iphone/Calendar.css"></link>
+ 		<link rel="stylesheet" href="css/main.css"></link>
+ 		<!-- <link href="dojo/dojox/mobile/themes/android/android.css" rel="stylesheet"></link> -->
+ 	
+    	<script type="text/javascript" charset="utf-8" src="dojo/dojo/dojo.js" data-dojo-config="isDebug:1, async:1"></script>
+		<script>
+			require(
+				[
+				 "dojox/mobile/parser", 
+				 "dojo/_base/xhr",
+				 "dijit/dijit",
+				 "dojo/json",
+				 "dojo/data/ItemFileReadStore",
+				 "dojox/mobile", 
+				 "dojox/mobile/ScrollableView",
+				 "dojox/mobile/deviceTheme",
+				 "dojox/mobile/TextBox",
+				 "dojox/mobile/TextArea",
+				 "dojox/mobile/Button",
+				 "dojox/mobile/RoundRectDataList",
+				 "dojox/mobile/ListItem",
+				 "dojox/mobile/ProgressIndicator",
+				 "dojox/mobile/compat", 
+				 "dojox/calendar/Calendar",
+				 "dojo/domReady!"
+				 ],
+			function(parser) {
+				var ps = dojo.position('preloaderContent');
+                var ws = dojo.window.getBox();
+                dojo.style("preloaderContent", "top" , (ws.h/2-ps.h/2)+"px");
+                dojo.style("preloaderContent", "left", (ws.w/2-ps.w/2)+"px");
+                dojo.style("preloaderContent", "visibility" , "visible");
+
+                parser.parse();
+                        
+				var hide = function(){
+                    dojo.style("preloader", "display", "none");
+                };
+                setTimeout(hide, 3000);
+                        
+				if (localStorage.u && localStorage.u!="" && localStorage.p && localStorage.p!=""){
+					u = dijit.byId('username');
+					p = dijit.byId('password');
+					u.set('value', localStorage.u);
+					p.set('value', localStorage.p);
+				}
+			});
+		</script>
+		
+		<script type="text/javascript" charset="utf-8" src="../cordova-2.1.0.js" ></script>
+		
+		<script>
+		</script>
+		
+		<script type="text/javascript" charset="utf-8" src="js/config.js" ></script>
+		<script type="text/javascript" charset="utf-8" src="js/functions.js" ></script>
+		
+    </head>
+    <body>
+    	<div id="preloader" style="display: block;">
+            <div id="preloaderContent" style="visibility: hidden;">
+                <strong>CENOQ Corp.</strong>
+                <img width="20px" height="20px" src="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dojox/image/resources/images/loading.gif"><br>
+                    Welcome to BizNavi-Mobile!!
+                </div>
+        </div>
+    	
+		<div dojoType="dojox.mobile.View" id="LoginPage" selected="true">
+			<div dojoType="dojox.mobile.Heading" data-dojo-props=''>BizNavi</div>
+				<table border="0" align="center">
+					<tr>
+						<td>帳號:</td>
+					<tr>
+					<tr>
+						<td colspan=2><input id="username" type="text" dojoType="dojox.mobile.TextBox" placeHolder="UserName" /></br></td>
+					<tr>
+					<tr>
+						<td>密碼:</td>
+					<tr>
+					<tr>
+						<td colspan=2><input id="password" type="password" dojoType="dojox.mobile.TextBox" placeHolder="Password" /></td>
+					<tr>
+					<tr>
+						<td>
+							<button id="sendBtn" dojoType="dojox.mobile.Button" style="width:80px;height:30px;" onClick="login();">登  入</button>
+						</td>
+						<td>
+							<button dojoType="dojox.mobile.Button" style="width:80px;height:30px;" onClick="reset();">清除重設</button>
+						</td>
+					<tr>
+				</table>
+		</div>
+		<div dojoType="dojox.mobile.View" id="MainPage">
+			<div dojoType="dojox.mobile.Heading" data-dojo-props="">BizNavi (主功能表)
+				<span dojoType="dojox.mobile.ToolBarButton" data-dojo-props='defaultColor:"mblColorBlue"' style="float:right;" onClick="gotoPage('MainPage', 'LoginPage');">登出</span>
+			</div>
+			<table border="0" align="center">
+				<tr>
+					<td>
+						<button id="calendar_btn" dojoType="dojox.mobile.Button" style="width:200px;height:60px;" onClick="gotoPage('MainPage','CalPage');">行事曆</button>
+					</td>
+				<tr>
+				<tr>
+					<td>
+						<button id="hr_check_in_out_btn" dojoType="dojox.mobile.Button" style="width:200px;height:60px;" onClick="gotoPage('MainPage','AttdPage');">簽入/簽出</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<button id="hr_leave_btn" dojoType="dojox.mobile.Button" style="width:200px;height:60px;" onClick="gotoPage('MainPage','LeavePage');">請假</button>
+					</td>
+				<tr>
+				<tr>
+					<td>
+						<button id="crm_add_lead_btn" dojoType="dojox.mobile.Button" style="width:200px;height:60px;" onClick="gotoPage('MainPage','LeadsPage');">新增潛在客戶</button>
+					</td>
+				<tr>
+				<tr>
+					<td>
+						<button id="crm_opp_list_btn" dojoType="dojox.mobile.Button" style="width:200px;height:60px;" onClick="getOpptunitity();">商機列表</button>
+					</td>
+				<tr>
+			</table>
+		</div>
+		<div dojoType="dojox.mobile.View" id="CalPage">
+			<div dojoType="dojox.mobile.Heading" data-dojo-props="fixed:'top', back:'回主頁', moveTo:'MainPage'" >行事曆
+				<span dojoType="dojox.mobile.ToolBarButton" data-dojo-props='defaultColor:"mblColorBlue"' style="float:right;" onClick="">Opt</span>
+			</div>
+			<div data-dojo-type="dojox.calendar.Calendar" data-dojo-props="date: new Date(2012, 10, 1), dateInterval:'week', dateIntervalSteps:1">
+            </div>
+		</div>
+		<div dojoType="dojox.mobile.View" id="LeavePage">
+			<div dojoType="dojox.mobile.Heading" data-dojo-props="back:'回主頁', moveTo:'MainPage'">請假</div>
+			<table border="0" align="center">
+				<tr>
+					<td>
+						<button dojoType="dojox.mobile.Button" onClick="">請明天一整天</button>
+					</td>
+					<td>
+						<button dojoType="dojox.mobile.Button" onClick="">自訂請假</button>
+					</td>
+				<tr>
+			</table>
+		</div>
+		<div dojoType="dojox.mobile.View" id="AttdPage">
+			<div dojoType="dojox.mobile.Heading" data-dojo-props="back:'回主頁', moveTo:'MainPage'">簽入/簽出</div>
+			<table border="0" align="center">
+				<tr hight="100" valign="top">
+					<td>目前狀態:<input id="attdStatus" type="text" readonly="readonly" dojoType="dojox.mobile.TextBox"/></td>
+				</tr>
+				<tr hight="100">
+					<td>
+						<button dojoType="dojox.mobile.Button" style="width:230px;height:70px;" onClick="checkin();">簽入</button>
+					</td>
+				</tr>
+				<tr hight="100">
+					<td>
+						<button dojoType="dojox.mobile.Button" style="width:230px;height:70px;" onClick="checkout();">簽出</button>
+					</td>
+				<tr>
+			</table>
+		</div>
+		<div dojoType="dojox.mobile.View" id="LeadsPage">
+			<div dojoType="dojox.mobile.Heading" data-dojo-props="back:'回主頁', moveTo:'MainPage'">新增潛在客戶
+				<span dojoType="dojox.mobile.ToolBarButton" data-dojo-props='defaultColor:"mblColorBlue"' style="float:right;" onClick="leadsSave();">儲存</span>
+			</div>
+			<table border="0">
+				<tr>
+					<td>主題:</td>
+				<tr>
+				<tr>
+					<td><input id="leads_subject" type="text" dojoType="dojox.mobile.TextBox" style="width:270px;height:30px;" name="leads_subject" /></br></td>
+				<tr>
+				<tr>
+					<td>記事:</td>
+				<tr>
+				<tr>
+					<td><textarea id="leads_notes" dojoType="dojox.mobile.TextArea" name="leads_notes" rows="25" cols="40"></textarea></td>
+				<tr>
+			</table>
+		</div>
+		<div dojoType="dojox.mobile.View" id="OppsListPage">
+			<div dojoType="dojox.mobile.Heading" data-dojo-props="fixed:'top', back:'回主頁', moveTo:'MainPage'" >商機列表
+				<span dojoType="dojox.mobile.ToolBarButton" data-dojo-props='defaultColor:"mblColorBlue"' style="float:right;" onClick="OppsAdd();">+</span>
+			</div>
+			<div id="oppsMainListView" dojoType="dojox.mobile.ScrollableView">
+				<ul id="opptDataList" data-dojo-type="dojox.mobile.RoundRectDataList"></ul>
+			</div>
+		</div>
+    </body>
+</html>
